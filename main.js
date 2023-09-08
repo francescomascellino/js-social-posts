@@ -28,6 +28,7 @@ Formattare le date in formato italiano (gg/mm/aaaa)
 Gestire l'assenza dell'immagine profilo con un elemento di fallback che contiene le iniziali dell'utente (es. Luca Formicola > LF).
 
 Al click su un pulsante "Mi Piace" di un post, se abbiamo già cliccato dobbiamo decrementare il contatore e cambiare il colore del bottone.
+
 Consigli del giorno:
 Ragioniamo come sempre a step. Prima scriviamo nei commenti la logica in italiano e poi traduciamo in codice. console.log() è nostro amico. Quando un pezzo di codice funziona, chiediamoci se possiamo scomporlo in funzioni più piccole.
 Nota (bonus extra) - super opzionale:
@@ -93,11 +94,13 @@ const posts = [
         },
         "likes": 95,
         'likeClass': '',
-        "created": "2021-03-05"
+        "created": "2022-03-05"
     }
 ];
 
 const postsContainer = document.querySelector("#container.posts-list");
+
+let idArray = [];
 
 // const cardMarkup = `
 // <div class="post">
@@ -147,6 +150,27 @@ function generatePostCards(posts) {
         //PRENDO UN'IMMAGINA CASUALE DA LOREM PICSUM DA USARE COME FALLBACK
         const fallBackAvatar = "https://picsum.photos/200"
 
+        //CONVERTE LA DATA AMERICANA IN EU
+        let dateCreated = new Date(card.created); //PRENDE LA DATA DEL POST
+
+        let EuroDate = dateCreated.getDate() + '/' + (dateCreated.getMonth() + 1) + '/' + dateCreated.getFullYear();
+        console.log(EuroDate);
+
+        //FUNZIONE PER SAPERE DA QUANTI MESI IL POST E' STATO CREATO
+        let today = new Date(); //PRENDE LA DATA DI OGGI
+
+        function monthsAgo(actualDate, dateCreated) {
+            let months;
+            months = (actualDate.getFullYear() - dateCreated.getFullYear()) * 12;
+            months -= (actualDate.getMonth());
+            months += (dateCreated.getMonth());
+            return months <= 0 ? 0 : months;
+        };
+
+        const monthsCreated = ` (${monthsAgo(today, dateCreated)} mesi fa)`;
+
+        console.log(monthsCreated);
+
         const cardMarkup = `
     <div id="post_${card.id}" class="post">
     <div class="post__header">
@@ -156,7 +180,7 @@ function generatePostCards(posts) {
             </div>
             <div class="post-meta__data">
                 <div class="post-meta__author">${card.author.name}</div>
-                <div class="post-meta__time">${card.created}</div>
+                <div class="post-meta__time">${EuroDate}${monthsCreated}</div>
             </div>                    
         </div>
     </div>
@@ -240,8 +264,6 @@ Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e inc
 function generateLikeBtns(likeBtns) {
     likeBtns.forEach(btn => {
 
-        console.log(btn);
-
         btn.addEventListener("click", (e) => {
 
             //EVITA IL REFRESH AL CLICK DEL LIKE
@@ -260,8 +282,12 @@ function generateLikeBtns(likeBtns) {
                     //SE LA PROP id DELL'OGGETTO ALLA POSIZIONE KEY E' UGUALE ALL postId
                     if (posts[key].id == postId) {
 
+                        //PUSHA L'id NELL'ARRAY DI ID idArray
+                        idArray.push(postId);
+                        console.log(idArray);
+
                         //AGGIUNGE 1 AL VALORE DELLA PROPRIETA' likes DELL'OGGETTO
-                        posts[key].likes++
+                        posts[key].likes++;
 
                         //AGGIUNGE LA PROPRIETAA' CLASSE PIACIUTO ALL'OGGETTO
                         posts[key].likeClass = "like-button--liked";
@@ -288,8 +314,14 @@ function generateLikeBtns(likeBtns) {
                     //SE LA PROP id DELL'OGGETTO ALLA POSIZIONE KEY E' UGUALE ALL postId
                     if (posts[key].id == postId) {
 
+                        //FILTRA DA idArray I VALORI DIVERSI DA postId E LI ASSEGNA ALLA VARIABILE filteredIds
+                        const filteredIds = idArray.filter(id => { return id != postId });
 
-                        posts[key].likes--
+                        //ASSEGNA IL VALORE DI filteredIds A idArray
+                        idArray = filteredIds;
+                        console.log("idarray after filter", idArray);
+
+                        posts[key].likes--;
 
                         //RIMUOVE LA CLASSE PIACIUTO DALL'OGGETTO
                         posts[key].likeClass = "";
@@ -314,26 +346,4 @@ function generateLikeBtns(likeBtns) {
 const likeBtns = document.querySelectorAll("a.like-button");
 
 //GENERA I PULSANTI LIKE
-generateLikeBtns(likeBtns)
-
-
-//TEST SULLE DATE PER AVERE DA QUANTI MESI IL POST E' STATO CREATO
-function monthsAgo(actualDate, DateCreated) {
-    let months;
-    months = (actualDate.getFullYear() - DateCreated.getFullYear()) * 12;
-    months -= actualDate.getMonth();
-    months += DateCreated.getMonth();
-    return months <= 0 ? 0 : months;
-};
-
-let today = new Date();
-let DateCreated = new Date("2021-03-05")
-console.log(DateCreated);
-console.log(today);
-console.log(monthsAgo(today, DateCreated))
-
-//COME CONVERTIRA UNA DATA AMERICANA IN EU?
-
-//MAP PER CREARE UN ARRAY DI ID
-// const likedPosts = posts.map((post) => { return post.id })
-// console.log(likedPosts);
+generateLikeBtns(likeBtns);
