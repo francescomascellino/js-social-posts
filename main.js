@@ -44,6 +44,7 @@ const posts = [
             "image": "https://unsplash.it/300/300?image=15"
         },
         "likes": 80,
+        'likeClass': '',
         "created": "2021-06-25"
     },
     {
@@ -55,6 +56,7 @@ const posts = [
             "image": "https://unsplash.it/300/300?image=10"
         },
         "likes": 120,
+        'likeClass': '',
         "created": "2021-09-03"
     },
     {
@@ -66,6 +68,7 @@ const posts = [
             "image": "https://unsplash.it/300/300?image=20"
         },
         "likes": 78,
+        'likeClass': '',
         "created": "2021-05-15"
     },
     {
@@ -77,6 +80,7 @@ const posts = [
             "image": null
         },
         "likes": 56,
+        'likeClass': '',
         "created": "2021-04-03"
     },
     {
@@ -88,6 +92,7 @@ const posts = [
             "image": "https://unsplash.it/300/300?image=29"
         },
         "likes": 95,
+        'likeClass': '',
         "created": "2021-03-05"
     }
 ];
@@ -130,10 +135,13 @@ const postsContainer = document.querySelector("#container.posts-list");
 /* Milestone 2
 Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed. */
 
+//GENERA IL MARKUP
 function generatePostCards(posts) {
 
+    //SVUOTA LA PAGINA PER AVITARE ACCUMULO DI POST IN CASO DI RICHIAMO SUCCESSIVO
     postsContainer.innerHTML = "";
 
+    //PER OGNI ELEMENTO DELL'ARRAY DI OGGETTI POST MODIFICA IL MARKUP
     posts.forEach(card => {
 
         //PRENDO UN'IMMAGINA CASUALE DA LOREM PICSUM DA USARE COME FALLBACK
@@ -159,7 +167,7 @@ function generatePostCards(posts) {
     <div class="post__footer">
         <div class="likes js-likes">
             <div class="likes__cta">
-                <a class="like-button js-like-button" href="" data-postid="${card.id}">
+                <a class="like-button js-like-button ${card.likeClass}" href="#" data-postid="${card.id}">
                     <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
                     <span class="like-button__label">Mi Piace</span>
                 </a>
@@ -172,19 +180,17 @@ function generatePostCards(posts) {
     </div>
     `;
 
+        //AGGIUNGE IL MARKUP AL NODO DEL DOM
         postsContainer.insertAdjacentHTML("beforeend", cardMarkup);
 
     });
 
-    const likeBtns = document.querySelectorAll("a.like-button");
-    console.log(likeBtns);
-
-    generateLikeBtns(likeBtns)
-
 };
 
+//ESEGUE generatePostCards LA PRIMA VOLTA
 generatePostCards(posts);
 
+//CODICE ORIGINALE DELLA FUNZIONE GENERA CARD
 /* posts.forEach(card => {
 
     //PRENDO UN'IMMAGINA CASUALE DA LOREM PICSUM DA USARE COME FALLBACK
@@ -230,15 +236,19 @@ generatePostCards(posts);
 /* Milestone 3
 Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo. Salviamo in un secondo array gli id dei post ai quali abbiamo messo il like. */
 
+//GENERA PULSANTI LIKE
 function generateLikeBtns(likeBtns) {
     likeBtns.forEach(btn => {
 
         console.log(btn);
 
         btn.addEventListener("click", (e) => {
+
+            //EVITA IL REFRESH AL CLICK DEL LIKE
             e.preventDefault();
             console.log("click");
 
+            //SE NON CONTIENE LA CLASSE PIACIUTO
             if (!btn.classList.contains("like-button--liked")) {
 
                 //RECUPERO L'ID DEL POST
@@ -247,34 +257,50 @@ function generateLikeBtns(likeBtns) {
 
                 for (const key in posts) {
 
+                    //SE LA PROP id DELL'OGGETTO ALLA POSIZIONE KEY E' UGUALE ALL postId
                     if (posts[key].id == postId) {
+
+                        //AGGIUNGE 1 AL VALORE DELLA PROPRIETA' likes DELL'OGGETTO
                         posts[key].likes++
-                        // generatePostCards(posts);
-                        btn.classList.add("like-button--liked");
+
+                        //AGGIUNGE LA PROPRIETAA' CLASSE PIACIUTO ALL'OGGETTO
+                        posts[key].likeClass = "like-button--liked";
                         console.log(btn);
                         console.log(posts[key].likes);
 
-                        // const likedPosts = posts.map((post) => { return post.id })
-                        // console.log(likedPosts);
+                        //RIGENERA IL MARKUP E I BOTTONI
+                        generatePostCards(posts);
+                        const likeBtns = document.querySelectorAll("a.like-button");
+                        generateLikeBtns(likeBtns);
 
                     }
                 }
 
+                //SE CONTIENE LA CLASSE PIACIUTO
             } else if (btn.classList.contains("like-button--liked")) {
 
+                //RECUPERO L'ID DEL POST
                 const postId = btn.getAttribute("data-postid");
                 console.log(postId);
 
                 for (const key in posts) {
+
+                    //SE LA PROP id DELL'OGGETTO ALLA POSIZIONE KEY E' UGUALE ALL postId
                     if (posts[key].id == postId) {
+
+
                         posts[key].likes--
-                        // generatePostCards(posts);
+
+                        //RIMUOVE LA CLASSE PIACIUTO DALL'OGGETTO
+                        posts[key].likeClass = "";
                         btn.classList.remove("like-button--liked");
                         console.log(btn);
                         console.log(posts[key].likes);
 
-                        // const likedPosts = posts.map((post) => { return post.id })
-                        // console.log(likedPosts);
+                        //RIGENERA IL MARKUP E I BOTTONI
+                        generatePostCards(posts);
+                        const likeBtns = document.querySelectorAll("a.like-button");
+                        generateLikeBtns(likeBtns);
 
                     }
                 }
@@ -283,10 +309,13 @@ function generateLikeBtns(likeBtns) {
         })
 
     });
-}
+};
 
+//CREA UN ARRAY CON GLI ELEMENTI DELLA DOM DEI PULSANTI LIKE
+const likeBtns = document.querySelectorAll("a.like-button");
 
-
+//GENERA I PULSANTI LIKE
+generateLikeBtns(likeBtns)
 
 
 //TEST SULLE DATE PER AVERE DA QUANTI MESI IL POST E' STATO CREATO
@@ -305,3 +334,7 @@ console.log(today);
 console.log(monthsAgo(today, DateCreated))
 
 //COME CONVERTIRA UNA DATA AMERICANA IN EU?
+
+//MAP PER CREARE UN ARRAY DI ID
+// const likedPosts = posts.map((post) => { return post.id })
+// console.log(likedPosts);
