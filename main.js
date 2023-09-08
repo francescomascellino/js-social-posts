@@ -136,7 +136,7 @@ posts.forEach(card => {
     const fallBackAvatar = "https://picsum.photos/200"
 
     const cardMarkup = `
-<div class="post">
+<div id="post_${card.id}" class="post">
 <div class="post__header">
     <div class="post-meta">                    
         <div class="post-meta__icon">
@@ -144,24 +144,24 @@ posts.forEach(card => {
         </div>
         <div class="post-meta__data">
             <div class="post-meta__author">${card.author.name}</div>
-            <div class="post-meta__time">4 mesi fa</div>
+            <div class="post-meta__time">${card.created}</div>
         </div>                    
     </div>
 </div>
-<div class="post__text">Placeat libero ipsa nobis ipsum quibusdam quas harum ut. Distinctio minima iusto. Ad ad maiores et sint voluptate recusandae architecto. Et nihil ullam aut alias.</div>
+<div class="post__text">${card.content}</div>
 <div class="post__image">
     <img src="${card.media}" alt="">
 </div>
 <div class="post__footer">
     <div class="likes js-likes">
         <div class="likes__cta">
-            <a class="like-button  js-like-button" href="#" data-postid="1">
+            <a class="like-button  js-like-button" href="#" data-postid="${card.id}">
                 <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
                 <span class="like-button__label">Mi Piace</span>
             </a>
         </div>
         <div class="likes__counter">
-            Piace a <b id="like-counter-1" class="js-likes-counter">80</b> persone
+            Piace a <b id="like-counter-1" class="js-likes-counter">${card.likes}</b> persone
         </div>
     </div> 
 </div>            
