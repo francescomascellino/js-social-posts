@@ -155,7 +155,7 @@ posts.forEach(card => {
 <div class="post__footer">
     <div class="likes js-likes">
         <div class="likes__cta">
-            <a class="like-button js-like-button" href="" data-postid="${card.id}">
+            <a class="like-button js-like-button" href="#" data-postid="${card.id}">
                 <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
                 <span class="like-button__label">Mi Piace</span>
             </a>
@@ -172,6 +172,9 @@ posts.forEach(card => {
 
 });
 
+/* Milestone 3
+Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo. Salviamo in un secondo array gli id dei post ai quali abbiamo messo il like. */
+
 const likeBtns = document.querySelectorAll("a.like-button");
 console.log(likeBtns);
 
@@ -179,16 +182,36 @@ likeBtns.forEach(btn => {
 
     console.log(btn);
 
-    btn.addEventListener("click", () => {
+    btn.addEventListener("mouseover", () => {
         console.log("click");
+
+        if (!btn.classList.contains("liked")) {
+
+            //RECUPERO L'ID DEL POST
+            const postId = btn.getAttribute("data-postid");
+            console.log(postId);
+
+            for (const key in posts) {
+                if (posts[key].id == postId) {
+                    posts[key].likes++
+                    btn.classList.add("liked");
+                    btn.style.color = "blue";
+                    console.log("btn");
+                    console.log(posts[key].likes);
+
+                    // const likedPosts = posts.map((post) => { return post.id })
+                    // console.log(likedPosts);
+
+                }
+            }
+
+        }
+
     })
+
 });
 
-/* Milestone 3
-Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo. Salviamo in un secondo array gli id dei post ai quali abbiamo messo il like. */
 
-const likedPosts = posts.map((post) => { return post.id })
-console.log(likedPosts);
 
 //TEST SULLE DATE PER AVERE DA QUANTI MESI IL POST E' STATO CREATO
 function monthsAgo(actualDate, DateCreated) {
