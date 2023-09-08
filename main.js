@@ -293,7 +293,6 @@ function generateLikeBtns(likeBtns) {
 
                         //RIMUOVE LA CLASSE PIACIUTO DALL'OGGETTO
                         posts[key].likeClass = "";
-                        btn.classList.remove("like-button--liked");
                         console.log(btn);
                         console.log(posts[key].likes);
 
