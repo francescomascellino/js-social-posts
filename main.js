@@ -93,7 +93,6 @@ const posts = [
 ];
 
 const postsContainer = document.querySelector("#container.posts-list");
-console.log(postsContainer);
 
 // const cardMarkup = `
 // <div class="post">
@@ -130,7 +129,63 @@ console.log(postsContainer);
 
 /* Milestone 2
 Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed. */
-posts.forEach(card => {
+
+function generatePostCards(posts) {
+
+    postsContainer.innerHTML = "";
+
+    posts.forEach(card => {
+
+        //PRENDO UN'IMMAGINA CASUALE DA LOREM PICSUM DA USARE COME FALLBACK
+        const fallBackAvatar = "https://picsum.photos/200"
+
+        const cardMarkup = `
+    <div id="post_${card.id}" class="post">
+    <div class="post__header">
+        <div class="post-meta">                    
+            <div class="post-meta__icon">
+                <img class="profile-pic" src="${card.author.image == null ? fallBackAvatar : card.author.image}" alt="${card.author.name}">                    
+            </div>
+            <div class="post-meta__data">
+                <div class="post-meta__author">${card.author.name}</div>
+                <div class="post-meta__time">${card.created}</div>
+            </div>                    
+        </div>
+    </div>
+    <div class="post__text">${card.content}</div>
+    <div class="post__image">
+        <img src="${card.media}" alt="">
+    </div>
+    <div class="post__footer">
+        <div class="likes js-likes">
+            <div class="likes__cta">
+                <a class="like-button js-like-button" href="" data-postid="${card.id}">
+                    <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+                    <span class="like-button__label">Mi Piace</span>
+                </a>
+            </div>
+            <div class="likes__counter">
+                Piace a <b id="like-counter-1" class="js-likes-counter">${card.likes}</b> persone
+            </div>
+        </div> 
+    </div>            
+    </div>
+    `;
+
+        postsContainer.insertAdjacentHTML("beforeend", cardMarkup);
+
+    });
+
+    const likeBtns = document.querySelectorAll("a.like-button");
+    console.log(likeBtns);
+
+    generateLikeBtns(likeBtns)
+
+};
+
+generatePostCards(posts);
+
+/* posts.forEach(card => {
 
     //PRENDO UN'IMMAGINA CASUALE DA LOREM PICSUM DA USARE COME FALLBACK
     const fallBackAvatar = "https://picsum.photos/200"
@@ -170,46 +225,67 @@ posts.forEach(card => {
 
     postsContainer.insertAdjacentHTML("beforeend", cardMarkup);
 
-});
+}); */
 
 /* Milestone 3
 Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo. Salviamo in un secondo array gli id dei post ai quali abbiamo messo il like. */
 
-const likeBtns = document.querySelectorAll("a.like-button");
-console.log(likeBtns);
+function generateLikeBtns(likeBtns) {
+    likeBtns.forEach(btn => {
 
-likeBtns.forEach(btn => {
+        console.log(btn);
 
-    console.log(btn);
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            console.log("click");
 
-    btn.addEventListener("mouseover", () => {
-        console.log("click");
+            if (!btn.classList.contains("like-button--liked")) {
 
-        if (!btn.classList.contains("liked")) {
+                //RECUPERO L'ID DEL POST
+                const postId = btn.getAttribute("data-postid");
+                console.log(postId);
 
-            //RECUPERO L'ID DEL POST
-            const postId = btn.getAttribute("data-postid");
-            console.log(postId);
+                for (const key in posts) {
 
-            for (const key in posts) {
-                if (posts[key].id == postId) {
-                    posts[key].likes++
-                    btn.classList.add("liked");
-                    btn.style.color = "blue";
-                    console.log("btn");
-                    console.log(posts[key].likes);
+                    if (posts[key].id == postId) {
+                        posts[key].likes++
+                        // generatePostCards(posts);
+                        btn.classList.add("like-button--liked");
+                        console.log(btn);
+                        console.log(posts[key].likes);
 
-                    // const likedPosts = posts.map((post) => { return post.id })
-                    // console.log(likedPosts);
+                        // const likedPosts = posts.map((post) => { return post.id })
+                        // console.log(likedPosts);
 
+                    }
+                }
+
+            } else if (btn.classList.contains("like-button--liked")) {
+
+                const postId = btn.getAttribute("data-postid");
+                console.log(postId);
+
+                for (const key in posts) {
+                    if (posts[key].id == postId) {
+                        posts[key].likes--
+                        // generatePostCards(posts);
+                        btn.classList.remove("like-button--liked");
+                        console.log(btn);
+                        console.log(posts[key].likes);
+
+                        // const likedPosts = posts.map((post) => { return post.id })
+                        // console.log(likedPosts);
+
+                    }
                 }
             }
 
-        }
+        })
 
-    })
+    });
+}
 
-});
+
 
 
 
