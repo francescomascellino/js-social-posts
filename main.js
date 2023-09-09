@@ -148,7 +148,7 @@ function generatePostCards(posts) {
 
                 ? `<div class="profile-pic-default"><span>${profPicLetters}</span></div>`
 
-                : `<img class="profile-pic" src="${card.author.image == null ? fallBackAvatar : card.author.image}" alt="${card.author.name}">`
+                : `<img class="profile-pic" src="${card.author.image}" alt="${card.author.name}">`
             }
 
             </div>
