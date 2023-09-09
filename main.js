@@ -114,14 +114,10 @@ function generatePostCards(posts) {
     //PER OGNI ELEMENTO DELL'ARRAY DI OGGETTI POST MODIFICA IL MARKUP
     posts.forEach(card => {
 
-        //PRENDO UN'IMMAGINA CASUALE DA LOREM PICSUM DA USARE COME FALLBACK
-        const fallBackAvatar = "https://picsum.photos/200"
-
         //CONVERTE LA DATA AMERICANA IN EU
         let dateCreated = new Date(card.created); //PRENDE LA DATA DEL POST
 
         let EuroDate = dateCreated.getDate() + '/' + (dateCreated.getMonth() + 1) + '/' + dateCreated.getFullYear();
-        console.log(EuroDate);
 
         //FUNZIONE PER SAPERE DA QUANTI MESI IL POST E' STATO CREATO
         let today = new Date(); //PRENDE LA DATA DI OGGI
@@ -136,14 +132,25 @@ function generatePostCards(posts) {
 
         const monthsCreated = ` (${monthsAgo(today, dateCreated)} mesi fa)`;
 
-        console.log(monthsCreated);
+        //DIVIDO IL NOME DELL'AUTORE PRENDENDO LO SPAZIO COME DIVISORE IN UN ARRAY CONTENENTE NOME E COGNOME
+        const authorSplit = card.author.name.split(" ");
+
+        //LE PRIME LETTERE SONO IL CARATTERE 0 DELL'INDICE 0 e 1 DI authorSplit
+        const profPicLetters = authorSplit[0].charAt(0) + authorSplit[1].charAt(0);
 
         const cardMarkup = `
     <div id="post_${card.id}" class="post">
     <div class="post__header">
         <div class="post-meta">                    
             <div class="post-meta__icon">
-                <img class="profile-pic" src="${card.author.image == null ? fallBackAvatar : card.author.image}" alt="${card.author.name}">                    
+
+            ${card.author.image == null
+
+                ? `<div class="profile-pic-default"><span>${profPicLetters}</span></div>`
+
+                : `<img class="profile-pic" src="${card.author.image == null ? fallBackAvatar : card.author.image}" alt="${card.author.name}">`
+            }
+
             </div>
             <div class="post-meta__data">
                 <div class="post-meta__author">${card.author.name}</div>
